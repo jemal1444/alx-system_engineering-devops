@@ -1,4 +1,6 @@
-ange nginx server to listen on port 80 and restart
+onfigures an Nginx server to listen on port 80.
 
-sed -i "s/8080/80/g" /etc/nginx/sites-enabled/default
+rm /etc/nginx/sites-enabled/default
+ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 service nginx restart
+
