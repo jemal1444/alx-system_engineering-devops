@@ -1,37 +1,25 @@
 #!/usr/bin/python3
+"""This module defines a script that returns information
+about the TO DO list progress of a user"""
 
-"""
-Python script that, using a REST API, for a given employee ID,
-returns information about his/her TODO list progress.
-"""
-
-from requests import get
+import requests
 from sys import argv
 
-
 if __name__ == "__main__":
-    response = get('https://jsonplaceholder.typicode.com/todos/')
-    data = response.json()
-    completed = 0
-    total = 0
+
+    user_id = argv[1]
+    tasks_completed = 0
     tasks = []
-    response2 = get('https://jsonplaceholder.typicode.com/users')
-    data2 = response2.json()
+    url = "https://jsonplaceholder.typicode.com"
 
-    for i in data2:
-        if i.get('id') == int(argv[1]):
-            employee = i.get('name')
+    user = requests.get("{}/users/{}" .format(url, user_id)).json()
+    todo_list = requests.get("{}/users/{}/todos" .format(url, user_id)).json()
 
-    for i in data:
-        if i.get('userId') == int(argv[1]):
-            total += 1
-
-            if i.get('completed') is True:
-                completed += 1
-                tasks.append(i.get('title'))
-
-    print("Employee {} is done with tasks({}/{}):".format(employee, completed,
-                                                          total))
-
-    for i in tasks:
-        print("\t {}".format(i))
+    for value in todo_list:
+        if value.get('completed') is True:
+            tasks_completed += 1
+            tasks.append(value.get('title'))
+    print("Employee {} is done with tasks({}/{}):".format(
+        user.get('name'), tasks_completed, len(todo_list)))
+    for task in tasks:
+        print("\t {}".format(task))
